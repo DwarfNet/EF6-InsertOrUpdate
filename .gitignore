@@ -2,13 +2,8 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/EF6-InsertOrUpdate/Properties
-/EF6-InsertOrUpdate/Program.cs
-/EF6-InsertOrUpdate/packages.config
-/EF6-InsertOrUpdate/obj/Debug
-/EF6-InsertOrUpdate/EF6-InsertOrUpdate.csproj
-/EF6-InsertOrUpdate/App.config
 /.vs
 /packages
-/EF6-InsertOrUpdate.sln
-/EF6-InsertOrUpdate/ConstValues.cs
+/EF6-InsertOrUpdate/bin/Debug
+/EF6-InsertOrUpdate/obj/Release
+/EF6-InsertOrUpdate/obj/Debug
