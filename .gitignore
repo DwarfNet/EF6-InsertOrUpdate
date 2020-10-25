@@ -8,7 +8,7 @@
 /EF6-InsertOrUpdate/obj/Debug
 /EF6-InsertOrUpdate/EF6-InsertOrUpdate.csproj
 /EF6-InsertOrUpdate/App.config
-/EF6-InsertOrUpdate
 /.vs
 /packages
 /EF6-InsertOrUpdate.sln
+/EF6-InsertOrUpdate/ConstValues.cs
