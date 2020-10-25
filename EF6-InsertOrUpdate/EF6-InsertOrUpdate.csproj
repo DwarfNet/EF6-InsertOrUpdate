@@ -179,6 +179,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Blog.cs" />
+    <Compile Include="ClassNotInDB.cs" />
     <Compile Include="EntityContext.cs" />
     <Compile Include="Post.cs" />
     <Compile Include="Program.cs" />

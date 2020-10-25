@@ -18,72 +18,90 @@ namespace EF6_InsertOrUpdate
                 var name = "Blog Init Name";
                 Console.WriteLine($"Create Blog {name}.");
                 var originalBlog = new Blog { Name = name };
+                SingleChange(db, name, originalBlog);
+                RangeTest(db, originalBlog);
+                //TestWithClassNotInOriginalDbSet(db);
 
-                Console.WriteLine($"Add Blog {originalBlog.Name} into db.");
-                db.Blogs.Add(originalBlog);
+                Console.WriteLine("Press any key to exit...");
+                Console.ReadKey();
+            }
+        }
 
-                Console.WriteLine($"Save Blog {originalBlog.Name} into db.");
-                db.SaveChanges();
+        private static void SingleChange(EntityContext db, string name, Blog originalBlog)
+        {
+            List<Blog> blogs;
+            Console.WriteLine($"Add Blog {originalBlog.Name} into db.");
+            db.Blogs.Add(originalBlog);
 
-                Console.WriteLine();
-                Console.WriteLine("All blogs in the database:");
-                blogs = db.Blogs.ToList();
-                foreach (var blog in blogs)
-                {
-                    Console.WriteLine($"Blog ID: {blog.BlogId}.\tBlog NAME: {blog.Name}.");
-                }
-                Console.WriteLine();
+            Console.WriteLine($"Save Blog {originalBlog.Name} into db.");
+            db.SaveChanges();
 
-                Console.WriteLine($"Get Blog where Name is {name}.");
-                var oldBlog = db.Blogs.Where(b => b.Name == name).FirstOrDefault();
-                Console.WriteLine($"Blog ID is : {oldBlog.BlogId}.");
+            Console.WriteLine();
+            Console.WriteLine("All blogs in the database:");
+            blogs = db.Blogs.ToList();
+            foreach (var blog in blogs)
+            {
+                Console.WriteLine($"Blog ID: {blog.BlogId}.\tBlog NAME: {blog.Name}.");
+            }
+            Console.WriteLine();
 
-                oldBlog.Name = "The new Blog";
-                Console.WriteLine($"Change Name for {oldBlog.Name}.");
+            Console.WriteLine($"Get Blog where Name is {name}.");
+            var oldBlog = db.Blogs.Where(b => b.Name == name).FirstOrDefault();
+            Console.WriteLine($"Blog ID is : {oldBlog.BlogId}.");
 
-                Console.WriteLine($"Insert or update the new blog version.");
-                db.InsertOrUpdate(oldBlog);
+            oldBlog.Name = "The new Blog";
+            Console.WriteLine($"Change Name for {oldBlog.Name}.");
 
-                Console.WriteLine($"Save Blog {oldBlog.Name} into db.");
-                db.SaveChanges();
+            Console.WriteLine($"Insert or update the new blog version.");
+            db.InsertOrUpdate(oldBlog);
 
-                Console.WriteLine();
-                Console.WriteLine("All blogs in the database:");
-                blogs = db.Blogs.ToList();
-                foreach (var blog in blogs)
-                {
-                    Console.WriteLine($"Blog ID: {blog.BlogId}.\tBlog NAME: {blog.Name}.");
-                }
-                Console.WriteLine();
+            Console.WriteLine($"Save Blog {oldBlog.Name} into db.");
+            db.SaveChanges();
 
-                var firstOfTheRange = db.Blogs.Where(b => b.BlogId == originalBlog.BlogId).Single();
-                firstOfTheRange.Name = "Jamais deux sans trois";
+            Console.WriteLine();
+            Console.WriteLine("All blogs in the database:");
+            blogs = db.Blogs.ToList();
+            foreach (var blog in blogs)
+            {
+                Console.WriteLine($"Blog ID: {blog.BlogId}.\tBlog NAME: {blog.Name}.");
+            }
+            Console.WriteLine();
+        }
 
-                var rangeTestBlogs = new List<Blog>() {
+        private static void RangeTest(EntityContext db, Blog originalBlog)
+        {
+            List<Blog> blogs;
+            var firstOfTheRange = db.Blogs.Where(b => b.BlogId == originalBlog.BlogId).Single();
+            firstOfTheRange.Name = "Jamais deux sans trois";
+
+            var rangeTestBlogs = new List<Blog>() {
                 firstOfTheRange,
                 new Blog(){ Name = "Blog 2"},
                 new Blog(){ Name = "Blog 3"},
                 new Blog(){ Name = "Blog 4"}
                 };
 
-                Console.WriteLine($"Insert or update Blogs from RangeTestBlogs into db.");
-                db.InsertOrUpdateRange(rangeTestBlogs);
+            Console.WriteLine($"Insert or update Blogs from RangeTestBlogs into db.");
+            db.InsertOrUpdateRange(rangeTestBlogs);
 
-                Console.WriteLine($"Save Blogs from RangeTestBlogs into db.");
-                db.SaveChanges();
+            Console.WriteLine($"Save Blogs from RangeTestBlogs into db.");
+            db.SaveChanges();
 
-                Console.WriteLine();
-                Console.WriteLine("All blogs in the database:");
-                blogs = db.Blogs.ToList();
-                foreach (var blog in blogs)
-                {
-                    Console.WriteLine($"Blog ID: {blog.BlogId}.\tBlog NAME: {blog.Name}.");
-                }
-                Console.WriteLine();
-
-                Console.WriteLine("Press any key to exit...");
-                Console.ReadKey();
+            Console.WriteLine();
+            Console.WriteLine("All blogs in the database:");
+            blogs = db.Blogs.ToList();
+            foreach (var blog in blogs)
+            {
+                Console.WriteLine($"Blog ID: {blog.BlogId}.\tBlog NAME: {blog.Name}.");
             }
+            Console.WriteLine();
+        }
+
+        private static void TestWithClassNotInOriginalDbSet(EntityContext db) {
+            var errorItem = new ClassNotInDB() {
+                Value = 10
+            };
+            db.InsertOrUpdate(errorItem);
         }
 
         private static void CleanCurrentDb(EntityContext db)
