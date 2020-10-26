@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,26 +9,40 @@ namespace EF6_InsertOrUpdate
 {
     class Program
     {
+        private readonly static int StaticId = 5;
+        private static int IncrementedId = 7;
+
         static void Main(string[] args)
         {
             using (var db = new EntityContext())
             {
-                List<Blog> blogs;
                 CleanCurrentDb(db);
+            }
 
-                var name = "Blog Init Name";
+            for (int i = 0; i < 10; i++)
+            {
+                Test();
+                i++;
+            }
+
+            Console.WriteLine("Press any key to exit...");
+            Console.ReadKey();
+        }
+
+        private static void Test()
+        {
+            using (var db = new EntityContext())
+            {
+                var name = $"Blog Init Name { StaticId }";
                 Console.WriteLine($"Create Blog {name}.");
-                var originalBlog = new Blog { Name = name };
-                SingleChange(db, name, originalBlog);
+                var originalBlog = new Blog { BlogId = StaticId, Name = name };
+                SingleChange(db, originalBlog);
                 RangeTest(db, originalBlog);
                 //TestWithClassNotInOriginalDbSet(db);
-
-                Console.WriteLine("Press any key to exit...");
-                Console.ReadKey();
             }
         }
 
-        private static void SingleChange(EntityContext db, string name, Blog originalBlog)
+        private static void SingleChange(EntityContext db, Blog originalBlog)
         {
             List<Blog> blogs;
             Console.WriteLine($"Add Blog {originalBlog.Name} into db.");
@@ -45,11 +60,11 @@ namespace EF6_InsertOrUpdate
             }
             Console.WriteLine();
 
-            Console.WriteLine($"Get Blog where Name is {name}.");
-            var oldBlog = db.Blogs.Where(b => b.Name == name).FirstOrDefault();
+            Console.WriteLine($"Get Blog where Name is {originalBlog.Name}.");
+            var oldBlog = db.Blogs.Where(b => b.BlogId == originalBlog.BlogId).FirstOrDefault();
             Console.WriteLine($"Blog ID is : {oldBlog.BlogId}.");
 
-            oldBlog.Name = "The new Blog";
+            oldBlog.Name = $"The new Blog {StaticId}";
             Console.WriteLine($"Change Name for {oldBlog.Name}.");
 
             Console.WriteLine($"Insert or update the new blog version.");
@@ -72,13 +87,13 @@ namespace EF6_InsertOrUpdate
         {
             List<Blog> blogs;
             var firstOfTheRange = db.Blogs.Where(b => b.BlogId == originalBlog.BlogId).Single();
-            firstOfTheRange.Name = "Jamais deux sans trois";
+            firstOfTheRange.Name = $"The new Blog {StaticId}";
 
             var rangeTestBlogs = new List<Blog>() {
                 firstOfTheRange,
-                new Blog(){ Name = "Blog 2"},
-                new Blog(){ Name = "Blog 3"},
-                new Blog(){ Name = "Blog 4"}
+                new Blog(){BlogId=IncrementedId++, Name = "Blog 2"},
+                new Blog(){BlogId=IncrementedId++, Name = "Blog 3"},
+                new Blog(){BlogId=IncrementedId++, Name = "Blog 4"}
                 };
 
             Console.WriteLine($"Insert or update Blogs from RangeTestBlogs into db.");
@@ -97,8 +112,10 @@ namespace EF6_InsertOrUpdate
             Console.WriteLine();
         }
 
-        private static void TestWithClassNotInOriginalDbSet(EntityContext db) {
-            var errorItem = new ClassNotInDB() {
+        private static void TestWithClassNotInOriginalDbSet(EntityContext db)
+        {
+            var errorItem = new ClassNotInDB()
+            {
                 Value = 10
             };
             db.InsertOrUpdate(errorItem);
